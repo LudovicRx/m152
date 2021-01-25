@@ -145,13 +145,7 @@
 	
 							</div>
 
-							<hr>
-
-							<h4 class="text-center">
-								Module 152 - Ludovic Roux
-							</h4>
-
-							<hr>
+							<?php include_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php"  . DIRECTORY_SEPARATOR . "footer.inc.php") ?>
 
 
 						</div><!-- /col-9 -->
@@ -162,21 +156,9 @@
 			</div>
 		</div>
 	</div>
+	<?php include_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php"  . DIRECTORY_SEPARATOR . "js.inc.php") ?>
 
-	<script type="text/javascript" src="assets/js/jquery.js"></script>
-	<script type="text/javascript" src="assets/js/bootstrap.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$('[data-toggle=offcanvas]').click(function() {
-				$(this).toggleClass('visible-xs text-center');
-				$(this).find('i').toggleClass('glyphicon-chevron-right glyphicon-chevron-left');
-				$('.row-offcanvas').toggleClass('active');
-				$('#lg-menu').toggleClass('hidden-xs').toggleClass('visible-xs');
-				$('#xs-menu').toggleClass('visible-xs').toggleClass('hidden-xs');
-				$('#btnShow').toggle();
-			});
-		});
-	</script>
+	
 </body>
 
 </html>

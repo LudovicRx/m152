@@ -27,9 +27,13 @@
 
                     <?php include_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php"  . DIRECTORY_SEPARATOR . "topNav.inc.php") ?>
 
+
+                    <?php include_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php"  . DIRECTORY_SEPARATOR . "footer.inc.php") ?>
+
                 </div>
             </div>
         </div>
+        <?php include_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php"  . DIRECTORY_SEPARATOR . "js.inc.php") ?>
 
 </body>
 
