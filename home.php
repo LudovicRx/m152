@@ -39,7 +39,7 @@
 									<div class="panel panel-default">
 										<div class="panel-thumbnail"><img src="assets/img/bg_5.jpg" class="img-responsive"></div>
 										<div class="panel-body">
-											<p class="lead">Nom de la blog</p>
+											<p class="lead">Nom du blog</p>
 											<p>45 Followers, 13 Posts</p>
 
 											<p>
