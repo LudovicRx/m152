@@ -3,8 +3,28 @@
 // Auteur    :   Ludovic Roux
 // Desc.     :   Page d'accueil
 // Version   :   1.0, 01.02.21, LR, version initiale
+define("MAX_IMG_SIZE", 30000000);
 
 require_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR . "app.inc.php");
+
+if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
+	$commentaire = filter_input(INPUT_POST, NAME_INPUT_COMMENTAIRE, FILTER_SANITIZE_STRING);
+
+	if (insertPost($commentaire)) {
+		$idPost = getLastPost();
+		if ($idPost) {
+			$images = $_FILES[NAME_INPUT_FILE];
+			for ($i = 0; $i < count($images['name']); $i++) {
+				if (!verifyNameExists($images['name'][$i]) && $images['size'][$i] <= MAX_IMG_SIZE) {
+					if (insertMedia($images['type'][$i], $images['name'][$i], $idPost)) {
+						$name = basename($images["name"][$i]);
+						move_uploaded_file($images['tmp_name'][$i], IMAGE_PATH . $name);
+					}
+				}
+			}
+		}
+	}
+}
 
 ?>
 <!DOCTYPE html>
@@ -145,7 +165,7 @@ require_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "p
 							</div>
 
 							<div class="row" id="footer">
-	
+
 							</div>
 
 							<?php include_once(VIEW_PATH . "footer.inc.php") ?>
@@ -161,7 +181,7 @@ require_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "p
 	</div>
 	<?php include_once(VIEW_PATH . "js.inc.php") ?>
 
-	
+
 </body>
 
 </html>

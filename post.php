@@ -39,16 +39,16 @@ require_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "p
                                     <h2>
                                         Ajouter un post
                                     </h2>
-                                    <form action="" enctype="multipart/form-data">
+                                    <form action="index.php" method="POST" enctype="multipart/form-data">
                                         <div class="row form-group">
-                                            <textarea class="form-control" name="text"></textarea>
+                                            <textarea class="form-control" name="<?= NAME_INPUT_COMMENTAIRE ?>"></textarea>
                                         </div>
                                         <div class="row form-group">
-                                            Choisissez une image : <input class="form-control" type="file" name="img[]" multiple accept="image/*">
+                                            Choisissez une image : <input class="form-control" type="file" name="<?= NAME_INPUT_FILE ?>[]" multiple accept="image/*">
 
                                         </div>
                                         <div class="row form-group">
-                                            <input class="form-control" type="submit">
+                                            <input class="form-control" type="submit" name="<?= NAME_SUBMIT_POST ?>">
                                             <div>
                                     </form>
                                 </div>

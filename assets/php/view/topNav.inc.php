@@ -20,7 +20,7 @@
         </form>
         <ul class="nav navbar-nav">
             <li>
-                <a href="home.php"><i class="glyphicon glyphicon-home"></i> Home</a>
+                <a href="index.php"><i class="glyphicon glyphicon-home"></i> Home</a>
             </li>
             <li>
                 <a href="post.php"><i class="glyphicon glyphicon-plus"></i> Post</a>
