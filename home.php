@@ -1,9 +1,12 @@
-<!--
-*    Projet    :   Facebook
-*    Auteur    :   Ludovic Roux
-*    Desc.     :   Page d'acceuil
-*    Version   :   1.0, 25.01.21, LR, version initiale
--->
+<?php
+// Projet    :   FaceBook
+// Auteur    :   Ludovic Roux
+// Desc.     :   Page d'accueil
+// Version   :   1.0, 01.02.21, LR, version initiale
+
+require_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR . "app.inc.php");
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,7 +28,7 @@
 				<!-- main right col -->
 				<div class="column col-md-12 col-sm-12" id="main">
 
-					<?php include_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php"  . DIRECTORY_SEPARATOR . "topNav.inc.php") ?>
+					<?php include_once(VIEW_PATH . "topNav.inc.php") ?>
 
 					<div class="padding">
 						<div class="full col-sm-9">
@@ -145,7 +148,7 @@
 	
 							</div>
 
-							<?php include_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php"  . DIRECTORY_SEPARATOR . "footer.inc.php") ?>
+							<?php include_once(VIEW_PATH . "footer.inc.php") ?>
 
 
 						</div><!-- /col-9 -->
@@ -156,7 +159,7 @@
 			</div>
 		</div>
 	</div>
-	<?php include_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php"  . DIRECTORY_SEPARATOR . "js.inc.php") ?>
+	<?php include_once(VIEW_PATH . "js.inc.php") ?>
 
 	
 </body>
