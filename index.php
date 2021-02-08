@@ -3,22 +3,34 @@
 // Auteur    :   Ludovic Roux
 // Desc.     :   Page d'accueil
 // Version   :   1.0, 01.02.21, LR, version initiale
-define("MAX_IMG_SIZE", 30000000);
+define("MAX_IMG_SIZE", 3000000);
+define("MAX_SIZE_DIR", 70000000);
 
 require_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR . "app.inc.php");
 
+//  Si on a appuyé sur le bouton submit
 if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
+	// Commentaire
 	$commentaire = filter_input(INPUT_POST, NAME_INPUT_COMMENTAIRE, FILTER_SANITIZE_STRING);
 
+	// Si l'insertion du post marche
 	if (insertPost($commentaire)) {
+		// Récupère l'id du post
 		$idPost = getLastPost();
+		// Si l'id du post est valide
 		if ($idPost) {
+			// Récupère les images
 			$images = $_FILES[NAME_INPUT_FILE];
+			// Parcoure chaque image
 			for ($i = 0; $i < count($images['name']); $i++) {
-				if (!verifyNameExists($images['name'][$i]) && $images['size'][$i] <= MAX_IMG_SIZE) {
-					if (insertMedia($images['type'][$i], $images['name'][$i], $idPost)) {
-						$name = basename($images["name"][$i]);
-						move_uploaded_file($images['tmp_name'][$i], IMAGE_PATH . $name);
+				// Vérifie que l'image n'est pas trop lourde, qu'il y a assezu de place dans el dossier et que le type du fichier est une image
+				if (canUploadFile($images['size'][$i], MAX_IMG_SIZE, MAX_SIZE_DIR, IMAGE_PATH) && exif_imagetype($images['tmp_name'][$i]) != false) {
+					// Crée un nom unique
+					$uniqueName = createUniqueName("img_", $image["name"][$i]);
+					// Insert le média dans la base de donnée
+					if (insertMedia($images['type'][$i], $uniqueName, $idPost)) {
+						// Si l'insertion dans la base de donnée a réussi, on insert le fichier dans le serveur
+						move_uploaded_file($images['tmp_name'][$i], IMAGE_PATH . $uniqueName);
 					}
 				}
 			}

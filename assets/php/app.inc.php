@@ -7,3 +7,4 @@
 require_once(__DIR__ . DIRECTORY_SEPARATOR . "path.inc.php");
 require_once(DATABASE_PATH . "functions.inc.php");
 require_once(VIEW_PATH . "const.inc.php");
+require_once(__DIR__ . DIRECTORY_SEPARATOR . "functions.inc.php");

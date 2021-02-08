@@ -39,32 +39,32 @@ function getLastPost() {
  * @param string $name
  * @return bool true si cela exist déjà
  */
-function verifyNameExists($name)
-{
-    static $ps = null;
-    $db = connectDB();
-    $sql = "SELECT nomFichierMedia FROM MEDIA WHERE nomFichierMedia LIKE :NOM_FICHIER_MEDIA";
+// function verifyNameExists($name)
+// {
+//     static $ps = null;
+//     $db = connectDB();
+//     $sql = "SELECT nomFichierMedia FROM MEDIA WHERE nomFichierMedia LIKE :NOM_FICHIER_MEDIA";
 
-    $answer = false;
-    try {
-        if ($ps == null) {
-            // prepare analyse la requête pour savoir s'il peut la résoudre (correction syntaxique, analyse table champs, calule le cout de la requete)
-            $ps = $db->prepare($sql);
-        }
+//     $answer = false;
+//     try {
+//         if ($ps == null) {
+//             // prepare analyse la requête pour savoir s'il peut la résoudre (correction syntaxique, analyse table champs, calule le cout de la requete)
+//             $ps = $db->prepare($sql);
+//         }
 
-        $ps->bindParam(':NOM_FICHIER_MEDIA', $name, PDO::PARAM_STR);
+//         $ps->bindParam(':NOM_FICHIER_MEDIA', $name, PDO::PARAM_STR);
 
-        if($ps->execute()) {
-            if(count($ps->fetchAll()) > 0) {
-                return true;
-            }
-        }
-    } catch (PDOException $e) {
-        echo $e->getMessage();
-    }
+//         if($ps->execute()) {
+//             if(count($ps->fetchAll()) > 0) {
+//                 return true;
+//             }
+//         }
+//     } catch (PDOException $e) {
+//         echo $e->getMessage();
+//     }
 
-    return $answer;
-}
+//     return $answer;
+// }
 
 /**
  * Insert un média 
