@@ -15,9 +15,9 @@ function getSizeDir($dir)
     $sizeDir = 0;
     $contentDirectory = scandir($dir);
     foreach ($contentDirectory as $key => $value) {
-        if(".." != $value || $value != ".") {
+        if (".." != $value || $value != ".") {
             $sizeDir += filesize($dir . $value);
-         }
+        }
     }
     return $sizeDir;
 }
@@ -46,6 +46,40 @@ function canUploadFile($imgSize, $maxImgSize, $maxSizeDir, $dir)
  * @param string $name name of the file to get the extension
  * @return string the unique name
  */
-function createUniqueName($prefix, $name) {
+function createUniqueName($prefix, $name)
+{
     return uniqid($prefix, true) . "." . pathinfo($name, PATHINFO_EXTENSION);
+}
+
+function showPosts($posts)
+{
+    $answer = "";
+    foreach ($posts as $key => $post) {
+        $answer .= '<div class="panel panel-default">';
+        $answer .= '<div class="panel-thumbnail">';
+        foreach ($post["images"] as $key => $value) {
+            $answer .= '<img src="assets/img/' . IMAGE_PATH . $value . '" class="img-responsive">';
+        }
+        $answer .= '</div>';
+        $answer .= '<div class="panel-body">';
+        $answer .= "</div>";
+        $answer .= '<p class="lead">Social Good</p>';
+        $answer .= '<p>' . $post["commentaire"] . '</p>';
+        $answer .= '</div>';
+        $answer .= '</div>';
+    }
+
+
+    // 	
+    // 		
+    // 		
+
+    // 		
+    // 			<img src="assets/img/photo.jpg" height="28px" width="28px">
+    // 			<img src="assets/img/photo.png" height="28px" width="28px">
+    // 			<img src="assets/img/photo_002.jpg" height="28px" width="28px">
+    // 		</p>
+    // 	
+    // <?php
+    return false;
 }

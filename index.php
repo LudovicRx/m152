@@ -6,7 +6,7 @@
 
 require_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR . "app.inc.php");
 
-
+$result = getPostsWithImages(getPosts());
 
 ?>
 <!DOCTYPE html>

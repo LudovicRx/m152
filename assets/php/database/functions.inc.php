@@ -11,7 +11,8 @@ require_once(__DIR__ . DIRECTORY_SEPARATOR . "database.inc.php");
  *
  * @return int|bool
  */
-function getLastPost() {
+function getLastPost()
+{
     static $ps = null;
     $db = connectDB();
     $sql = "SELECT idPost FROM POST ORDER BY idPost DESC LIMIT 1";
@@ -23,7 +24,7 @@ function getLastPost() {
             $ps = $db->prepare($sql);
         }
 
-        if($ps->execute()) {
+        if ($ps->execute()) {
             return $ps->fetch()["idPost"];
         }
     } catch (PDOException $e) {
@@ -121,6 +122,70 @@ function insertPost($commentaire)
         $ps->bindParam(':COMMENTAIRE', $commentaire, PDO::PARAM_STR);
 
         return $ps->execute();
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+
+    return $answer;
+}
+
+/**
+ * Get posts with the image corresponding 
+ *
+ * @param array $posts all the posts 
+ * @return array|bool
+ */
+function getPostsWithImages($posts)
+{
+    static $ps = null;
+    $db = connectDB();
+    $sql = "SELECT nomFichierMedia FROM MEDIA WHERE idPost = :ID_POST";
+
+    $answer = false;
+    try {
+        if ($ps == null) {
+            $ps = $db->prepare($sql);
+        }
+
+        if ($posts) {
+            $answer = [];
+            foreach ($posts as $key => $post) {
+                $ps->bindParam(":ID_POST", $post["idPost"], PDO::PARAM_INT);
+                $ps->execute();
+                $result = $post;
+                $result["images"] = $ps->fetchAll(PDO::FETCH_ASSOC);
+                array_push($answer, $result);
+            }
+        }
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+        $answer = false;
+    }
+
+    return $answer;
+}
+
+/**
+ * Get all posts
+ *
+ * @return bool|array
+ */
+function getPosts()
+{
+    static $ps = null;
+    $db = connectDB();
+    $sql = "SELECT * FROM POST ORDER BY dateDeCreation DESC";
+
+    $answer = false;
+    try {
+        if ($ps == null) {
+            // prepare analyse la requête pour savoir s'il peut la résoudre (correction syntaxique, analyse table champs, calule le cout de la requete)
+            $ps = $db->prepare($sql);
+        }
+
+        if ($ps->execute()) {
+            return $ps->fetchAll(PDO::FETCH_ASSOC);
+        }
     } catch (PDOException $e) {
         echo $e->getMessage();
     }
