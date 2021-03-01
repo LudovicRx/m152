@@ -31,7 +31,7 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
                     // Parcoure chaque image
                     for ($i = 0; $i < count($images['name']); $i++) {
                         // Vérifie que l'image est du bon type
-                        if (strpos($images['tmp_name'][$i], "image")) {
+                        if (strpos($images['type'][$i], "image") === 0) {
                             // Crée un nom unique
                             $uniqueName = createUniqueName("img_", $images["name"][$i]);
                             // Insert le média dans la base de donnée

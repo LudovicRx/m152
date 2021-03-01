@@ -47,28 +47,23 @@ function showPosts($posts)
         $answer .= '<div class="panel panel-default">';
         $answer .= '<div class="panel-thumbnail">';
         foreach ($post["images"] as $key => $value) {
-            $answer .= '<img src="assets/img/' . IMAGE_PATH . $value . '" class="img-responsive">';
+            $answer .= '<img src="assets/img/media/' . $value["nomFichierMedia"] . '" class="img-responsive">';
         }
         $answer .= '</div>';
         $answer .= '<div class="panel-body">';
+        // $answer .= '<p class="lead">Social Good</p>';
+        $answer .= '<p class="lead">' . $post["commentaire"] . '</p>';
+        $answer .= '</div>';
         $answer .= "</div>";
-        $answer .= '<p class="lead">Social Good</p>';
-        $answer .= '<p>' . $post["commentaire"] . '</p>';
-        $answer .= '</div>';
-        $answer .= '</div>';
+
     }
-
-
-    // 	
     // 		
-    // 		
-
+    //      <p>
     // 		
     // 			<img src="assets/img/photo.jpg" height="28px" width="28px">
     // 			<img src="assets/img/photo.png" height="28px" width="28px">
     // 			<img src="assets/img/photo_002.jpg" height="28px" width="28px">
     // 		</p>
     // 	
-    // <?php
-    return false;
+    return $answer;
 }

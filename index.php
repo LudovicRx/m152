@@ -138,6 +138,8 @@ $result = getPostsWithImages(getPosts());
 										</div>
 									</div>
 
+									<?= showPosts($result) ?>
+
 								</div>
 							</div>
 							<!--/row-->
@@ -164,11 +166,11 @@ $result = getPostsWithImages(getPosts());
 	<?php include_once(VIEW_PATH . "js.inc.php") ?>
 
 	<!-- Button trigger modal -->
-	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+	<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
 		Launch demo modal
-	</button>
+	</button> -->
 
-	<!-- Modal -->
+	 <!-- Modal -->
 	<!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
@@ -187,7 +189,7 @@ $result = getPostsWithImages(getPosts());
 				</div>
 			</div>
 		</div>
-	</div> -->
+	</div> --> 
 
 </body>
 <!-- <script>
