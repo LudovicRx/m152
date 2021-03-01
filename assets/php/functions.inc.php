@@ -5,38 +5,27 @@
 // Version   :   1.0, 08.02.21, LR, version initiale
 
 /**
- * Gets the size of the dir 
+ * Verify if we can upload the images in the site
  *
- * @param string $dir path of the directory
- * @return int size of the dir 
- */
-function getSizeDir($dir)
-{
-    $sizeDir = 0;
-    $contentDirectory = scandir($dir);
-    foreach ($contentDirectory as $key => $value) {
-        if (".." != $value || $value != ".") {
-            $sizeDir += filesize($dir . $value);
-        }
-    }
-    return $sizeDir;
-}
-
-/**
- * Verify if we can uploadthe file in the site
- *
- * @param int $imgSize size of the image
+ * @param array $images all the images
  * @param int $maxImgSize maximum size of the image
  * @param int $maxSizeDir maximum size of the dir   
- * @param string $dir path of the dir 
  * @return boolean true if can upload, else false
  */
-function canUploadFile($imgSize, $maxImgSize, $maxSizeDir, $dir)
+function canUploadImages($images, $maxImgSize, $maxTotalImagesSize)
 {
-    $answer = false;
-    if ($imgSize <= $maxImgSize &&  getSizeDir($dir) + $imgSize <= $maxSizeDir)
-        $answer = true;
-    return $answer;
+    $totalSize = 0;
+    for ($i = 0; $i < count($images["name"]); $i++) {
+        $totalSize += $images["size"][$i];
+        if ($images["size"][$i] >= $maxImgSize) {
+            return false;
+        }
+    }
+
+    if ($totalSize >= $maxTotalImagesSize) {
+        return false;
+    }
+    return true;
 }
 
 /**

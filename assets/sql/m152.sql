@@ -53,7 +53,7 @@ INSERT INTO `MEDIA` (`idMedia`, `typeMedia`, `nomFichierMedia`, `dateDeCreation`
 
 CREATE TABLE `POST` (
   `idPost` int(11) NOT NULL,
-  `commentaire` varchar(255) DEFAULT NULL,
+  `commentaire` varchar(255) NOT NULL,
   `dateDeCreation` timestamp NOT NULL DEFAULT current_timestamp(),
   `dateDeModification` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

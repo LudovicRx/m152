@@ -4,7 +4,7 @@
 // Desc.     :   Page qui permet de faire des posts
 // Version   :   1.0, 08.02.21, LR, version initiale
 define("MAX_IMG_SIZE", 3000000); // Taille maximum de l'image
-define("MAX_SIZE_DIR", 70000000); // Taille maximum du dossier
+define("MAX_POST_SIZE", 70000000); // Taille maximum du dossier
 
 require_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR . "app.inc.php");
 
@@ -16,37 +16,40 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
     // Commentaire
     $comment = filter_input(INPUT_POST, NAME_INPUT_COMMENT, FILTER_SANITIZE_STRING);
 
-    // Si l'insertion du post marche
-    if (insertPost($comment)) {
-        // Récupère l'id du post
-        $idPost = getLastPost();
-        // Si l'id du post est valide
-        if ($idPost) {
-            // Récupère les images
-            $images = $_FILES[NAME_INPUT_FILE];
-            // Parcoure chaque image
-            for ($i = 0; $i < count($images['name']); $i++) {
-                // Vérifie que l'image n'est pas trop lourde, qu'il y a assez de place dans le dossier
-                if (canUploadFile($images['size'][$i], MAX_IMG_SIZE, MAX_SIZE_DIR, IMAGE_PATH)) {
-                    // Vérifie que l'image est du bon type
-                    if (exif_imagetype($images['tmp_name'][$i]) != false) {
-                        // Crée un nom unique
-                        $uniqueName = createUniqueName("img_", $images["name"][$i]);
-                        // Insert le média dans la base de donnée
-                        if (insertMedia($images['type'][$i], $uniqueName, $idPost)) {
-                            // Si l'insertion dans la base de donnée a réussi, on insert le fichier dans le serveur
-                            if (!move_uploaded_file($images['tmp_name'][$i], IMAGE_PATH . $uniqueName)) {
+    // Si le commentaire est valide
+    if ($comment) {
+        // Si l'insertion du post marche
+        if (insertPost($comment)) {
+            // Récupère l'id du post
+            $idPost = getLastPost();
+            // Si l'id du post est valide
+            if ($idPost) {
+                // Récupère les images
+                $images = $_FILES[NAME_INPUT_FILE];
+                // Vérifie que les image ne sont pas trop lourdes, et que le total n'est pas trop lourd
+                if (canUploadImages($images, MAX_IMG_SIZE, MAX_POST_SIZE)) {
+                    // Parcoure chaque image
+                    for ($i = 0; $i < count($images['name']); $i++) {
+                        // Vérifie que l'image est du bon type
+                        if (strpos($images['tmp_name'][$i], "image")) {
+                            // Crée un nom unique
+                            $uniqueName = createUniqueName("img_", $images["name"][$i]);
+                            // Insert le média dans la base de donnée
+                            if (insertMedia($images['type'][$i], $uniqueName, $idPost)) {
+                                // Si l'insertion dans la base de donnée a réussi, on insert le fichier dans le serveur
+                                if (!move_uploaded_file($images['tmp_name'][$i], IMAGE_PATH . $uniqueName)) {
+                                }
                             }
+                        } else {
+                            array_push($errors, "Le type du fichier doit être une image.");
                         }
-                    } else {
-                        array_push($errors, "Le type du fichier doit être une image.");
                     }
                 }
-            }
 
-            if (count($errors) == 0) {
-                // Fait une redirection sur la page index s'il n'y a a pas eu d'erreur
-                header("Location: index.php?success=1");
+                if (count($errors) == 0) {
+                    // Fait une redirection sur la page index s'il n'y a a pas eu d'erreur
+                    header("Location: index.php?success=1");
+                }
             }
         }
     }
