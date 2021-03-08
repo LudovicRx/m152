@@ -6,7 +6,7 @@
 
 require_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR . "app.inc.php");
 
-$result = getPostsWithImages(getPosts());
+$result = getPostsWithMedias(getPosts());
 
 ?>
 <!DOCTYPE html>
@@ -124,20 +124,6 @@ $result = getPostsWithImages(getPosts());
 										<h2>Welcome</h2>
 									</div>
 
-									<div class="panel panel-default">
-										<div class="panel-thumbnail"><img src="assets/img/bg_4.jpg" class="img-responsive"></div>
-										<div class="panel-body">
-											<p class="lead">Social Good</p>
-											<p>1,200 Followers, 83 Posts</p>
-
-											<p>
-												<img src="assets/img/photo.jpg" height="28px" width="28px">
-												<img src="assets/img/photo.png" height="28px" width="28px">
-												<img src="assets/img/photo_002.jpg" height="28px" width="28px">
-											</p>
-										</div>
-									</div>
-
 									<?= showPosts($result) ?>
 
 								</div>
@@ -170,7 +156,7 @@ $result = getPostsWithImages(getPosts());
 		Launch demo modal
 	</button> -->
 
-	 <!-- Modal -->
+	<!-- Modal -->
 	<!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
@@ -189,7 +175,7 @@ $result = getPostsWithImages(getPosts());
 				</div>
 			</div>
 		</div>
-	</div> --> 
+	</div> -->
 
 </body>
 <!-- <script>

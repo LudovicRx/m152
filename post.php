@@ -3,7 +3,7 @@
 // Auteur    :   Ludovic Roux
 // Desc.     :   Page qui permet de faire des posts
 // Version   :   1.0, 08.02.21, LR, version initiale
-define("MAX_IMG_SIZE", 3000000); // Taille maximum de l'image
+define("MAX_IMG_SIZE", 3000000); // Taille maximum du media 
 define("MAX_POST_SIZE", 70000000); // Taille maximum du dossier
 
 require_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR . "app.inc.php");
@@ -19,38 +19,47 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
     // Si le commentaire est valide
     if ($comment) {
         // Si l'insertion du post marche
-        if (insertPost($comment)) {
+        if (dbStartTransaction() && insertPost($comment)) {
             // Récupère l'id du post
             $idPost = getLastPost();
             // Si l'id du post est valide
             if ($idPost) {
-                // Récupère les images
-                $images = $_FILES[NAME_INPUT_FILE];
-                // Vérifie que les image ne sont pas trop lourdes, et que le total n'est pas trop lourd
-                if (canUploadImages($images, MAX_IMG_SIZE, MAX_POST_SIZE)) {
-                    // Parcoure chaque image
-                    for ($i = 0; $i < count($images['name']); $i++) {
-                        // Vérifie que l'image est du bon type
-                        if (strpos($images['type'][$i], "image") === 0) {
+                // Récupère les medias
+                $medias = $_FILES[NAME_INPUT_FILE];
+                // Vérifie que les medias ne sont pas trop lourdes, et que le total n'est pas trop lourd
+                // L'erreur 4 indique qu'aucun fichier n'a été téléchargé, alors on vérifie s'il y a des medias qui ont été téléchargées
+                if ($medias["error"][0] != 4 && canUploadMedias($medias, MAX_IMG_SIZE, MAX_POST_SIZE)) {
+                    // Parcoure chaque media
+                    for ($i = 0; $i < count($medias['name']); $i++) {
+                        // Vérifie que l'image ou la vidéo est du bon type
+                        if (strpos($medias['type'][$i], "image") === 0 || strpos($medias['type'][$i], "video") === 0) {
                             // Crée un nom unique
-                            $uniqueName = createUniqueName("img_", $images["name"][$i]);
+                            $uniqueName = createUniqueName("media_", $medias["name"][$i]);
                             // Insert le média dans la base de donnée
-                            if (insertMedia($images['type'][$i], $uniqueName, $idPost)) {
+                            if (insertMedia($medias['type'][$i], $uniqueName, $idPost)) {
                                 // Si l'insertion dans la base de donnée a réussi, on insert le fichier dans le serveur
-                                if (!move_uploaded_file($images['tmp_name'][$i], IMAGE_PATH . $uniqueName)) {
+                                if (!move_uploaded_file($medias['tmp_name'][$i], MEDIA_PATH . $uniqueName)) {
+                                    array_push($errors, "Echec lors de l'importation de le média sur le serveur.");
                                 }
+                            } else {
+                                array_push($errors, "Echec lors de l'importation de le média dans la base de données.");
                             }
                         } else {
-                            array_push($errors, "Le type du fichier doit être une image.");
+                            array_push($errors, "Le type du fichier doit être une media.");
                         }
                     }
                 }
 
+                // S'il y a eu des errurs, il fait un rollback
                 if (count($errors) == 0) {
                     // Fait une redirection sur la page index s'il n'y a a pas eu d'erreur
+                    dbCommitTransaction();
                     header("Location: index.php?success=1");
+                } else {
+                    dbRollBack();
                 }
             }
+            
         }
     }
 }
@@ -94,7 +103,7 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
                                             <textarea class="form-control" name="<?= NAME_INPUT_COMMENT ?>"><?= $comment ?></textarea>
                                         </div>
                                         <div class="row form-group">
-                                            Choisissez une image : <input class="form-control" type="file" name="<?= NAME_INPUT_FILE ?>[]" multiple accept="image/*">
+                                            Choisissez une image ou une vidéo : <input class="form-control" type="file" name="<?= NAME_INPUT_FILE ?>[]" multiple accept="image/*,video/*">
 
                                         </div>
                                         <div class="row form-group">

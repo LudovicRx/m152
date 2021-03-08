@@ -98,12 +98,12 @@ function insertPost($commentaire)
 }
 
 /**
- * Get posts with the image corresponding 
+ * Get posts with the medias corresponding 
  *
  * @param array $posts all the posts 
  * @return array|bool
  */
-function getPostsWithImages($posts)
+function getPostsWithMedias($posts)
 {
     static $ps = null;
     $db = connectDB();
@@ -121,7 +121,7 @@ function getPostsWithImages($posts)
                 $ps->bindParam(":ID_POST", $post["idPost"], PDO::PARAM_INT);
                 $ps->execute();
                 $result = $post;
-                $result["images"] = $ps->fetchAll(PDO::FETCH_ASSOC);
+                $result["medias"] = $ps->fetchAll(PDO::FETCH_ASSOC);
                 array_push($answer, $result);
             }
         }
@@ -159,4 +159,31 @@ function getPosts()
     }
 
     return $answer;
+}
+
+/**
+ * Start a transaction
+ *
+ * @return bool true if succeed, else false
+ */
+function dbStartTransaction() {
+    return connectDB()->beginTransaction();
+}
+
+/**
+ * Commit the transaction
+ *
+ * @return bool trus if succeed, false if error
+ */
+function dbCommitTransaction() {
+    return connectDB()->commit();
+}
+
+/**
+ * Cancel the transaction
+ *
+ * @return bool true if succeed, else false
+ */
+function dbRollBack() {
+    return connectDB()->rollBack();
 }
