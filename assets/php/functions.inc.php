@@ -53,7 +53,14 @@ function showPosts($posts)
         $answer .= '<div class="panel panel-default">';
         $answer .= '<div class="panel-thumbnail">';
         foreach ($post["medias"] as $key => $value) {
-            $answer .= '<img src="assets/img/media/' . $value["nomFichierMedia"] . '" class="img-responsive">';
+            if (IsImage($value["typeMedia"])) {
+                $answer .= '<img src="assets/img/media/' . $value["nomFichierMedia"] . '" class="img-responsive">';
+            } else if (IsVideo($value["typeMedia"])) {
+                $answer .= "<video muted autoplay controls loop>";
+                $answer .= '<source src="assets/img/media/' . $value["nomFichierMedia"] . '">';
+                $answer .= "Your browser does not support the video tag.";
+                $answer .= "</video>";
+            }
         }
         $answer .= '</div>';
         $answer .= '<div class="panel-body">';
@@ -94,4 +101,26 @@ function showErrors($errors)
         $result .= "<div>$error</div>";
     }
     return $result;
+}
+
+/**
+ * Verify if this is an image
+ *
+ * @param string $type name of the type to verify
+ * @return bool trus if image, else false
+ */
+function IsImage($type)
+{
+    return strpos($type, "image") === 0;
+}
+
+/**
+ * Verify if this is a video
+ *
+ * @param string $type name of the type to verify
+ * @return bool true if video, else false
+ */
+function IsVideo($type)
+{
+    return strpos($type, "video") === 0;
 }

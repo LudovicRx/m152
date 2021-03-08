@@ -107,7 +107,7 @@ function getPostsWithMedias($posts)
 {
     static $ps = null;
     $db = connectDB();
-    $sql = "SELECT nomFichierMedia FROM MEDIA WHERE idPost = :ID_POST";
+    $sql = "SELECT nomFichierMedia, typeMedia FROM MEDIA WHERE idPost = :ID_POST";
 
     $answer = false;
     try {

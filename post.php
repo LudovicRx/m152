@@ -3,7 +3,7 @@
 // Auteur    :   Ludovic Roux
 // Desc.     :   Page qui permet de faire des posts
 // Version   :   1.0, 08.02.21, LR, version initiale
-define("MAX_IMG_SIZE", 3000000); // Taille maximum du media 
+define("MAX_MEDIA_SIZE", 7000000); // Taille maximum du media 
 define("MAX_POST_SIZE", 70000000); // Taille maximum du dossier
 
 require_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR . "app.inc.php");
@@ -28,24 +28,24 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
                 $medias = $_FILES[NAME_INPUT_FILE];
                 // Vérifie que les medias ne sont pas trop lourdes, et que le total n'est pas trop lourd
                 // L'erreur 4 indique qu'aucun fichier n'a été téléchargé, alors on vérifie s'il y a des medias qui ont été téléchargées
-                if ($medias["error"][0] != 4 && canUploadMedias($medias, MAX_IMG_SIZE, MAX_POST_SIZE)) {
+                if ($medias["error"][0] != 4 && canUploadMedias($medias, MAX_MEDIA_SIZE, MAX_POST_SIZE)) {
                     // Parcoure chaque media
                     for ($i = 0; $i < count($medias['name']); $i++) {
                         // Vérifie que l'image ou la vidéo est du bon type
-                        if (strpos($medias['type'][$i], "image") === 0 || strpos($medias['type'][$i], "video") === 0) {
+                        if (IsImage($medias['type'][$i]) || IsVideo($medias['type'][$i])) {
                             // Crée un nom unique
                             $uniqueName = createUniqueName("media_", $medias["name"][$i]);
                             // Insert le média dans la base de donnée
                             if (insertMedia($medias['type'][$i], $uniqueName, $idPost)) {
                                 // Si l'insertion dans la base de donnée a réussi, on insert le fichier dans le serveur
                                 if (!move_uploaded_file($medias['tmp_name'][$i], MEDIA_PATH . $uniqueName)) {
-                                    array_push($errors, "Echec lors de l'importation de le média sur le serveur.");
+                                    array_push($errors, "Echec lors de l'importation du média sur le serveur.");
                                 }
                             } else {
-                                array_push($errors, "Echec lors de l'importation de le média dans la base de données.");
+                                array_push($errors, "Echec lors de l'importation du média dans la base de données.");
                             }
                         } else {
-                            array_push($errors, "Le type du fichier doit être une media.");
+                            array_push($errors, "Le type du fichier doit être un media.");
                         }
                     }
                 }
@@ -59,7 +59,6 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
                     dbRollBack();
                 }
             }
-            
         }
     }
 }
@@ -113,6 +112,7 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
                                 </div>
                             </div>
                         </div>
+                        <?= showErrors($errors) ?>
                     </div>
 
 
