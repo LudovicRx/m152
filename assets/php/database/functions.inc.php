@@ -14,25 +14,6 @@ require_once(__DIR__ . DIRECTORY_SEPARATOR . "database.inc.php");
 function getLastPost()
 {
     return intval(connectDB()->lastInsertId());
-    // static $ps = null;
-    // $db = connectDB();
-    // $sql = "SELECT idPost FROM POST ORDER BY idPost DESC LIMIT 1";
-
-    // $answer = false;
-    // try {
-    //     if ($ps == null) {
-    //         // prepare analyse la requête pour savoir s'il peut la résoudre (correction syntaxique, analyse table champs, calule le cout de la requete)
-    //         $ps = $db->prepare($sql);
-    //     }
-
-    //     if ($ps->execute()) {
-    //         return $ps->fetch()["idPost"];
-    //     }
-    // } catch (PDOException $e) {
-    //     echo $e->getMessage();
-    // }
-
-    // return $answer;
 }
 
 /**
@@ -162,11 +143,69 @@ function getPosts()
 }
 
 /**
+ * Delete a post and the medias corresponding
+ *
+ * @param integer $idPost id of the post
+ * @return bool, true if succeed, else false
+ */
+function deletePost(int $idPost)
+{
+    static $ps = null;
+    $db = connectDB();
+    $sql = "DELETE FROM POST WHERE idPost = :ID_POST";
+
+    try {
+        if ($ps == null) {
+            // prepare analyse la requête pour savoir s'il peut la résoudre (correction syntaxique, analyse table champs, calule le cout de la requete)
+            $ps = $db->prepare($sql);
+        }
+
+        $ps->bindParam(":ID_POST", $idPost, PDO::PARAM_INT);
+
+        return $ps->execute();
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+
+    return false;
+}
+
+/**
+ * Get the medias from a post
+ *
+ * @param integer $idPost id of the post
+ * @return array|bool array if succeed else false
+ */
+function getMediasFromPost(int $idPost) {
+    static $ps = null;
+    $db = connectDB();
+    $sql = "SELECT nomFichierMedia FROM MEDIA WHERE idPost = :ID_POST";
+
+    try {
+        if ($ps == null) {
+            // prepare analyse la requête pour savoir s'il peut la résoudre (correction syntaxique, analyse table champs, calule le cout de la requete)
+            $ps = $db->prepare($sql);
+        }
+
+        $ps->bindParam(":ID_POST", $idPost, PDO::PARAM_INT);
+
+        if($ps->execute()) {
+            return $ps->fetchAll(PDO::FETCH_ASSOC);
+        }
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+
+    return false;
+}
+
+/**
  * Start a transaction
  *
  * @return bool true if succeed, else false
  */
-function dbStartTransaction() {
+function dbStartTransaction()
+{
     return connectDB()->beginTransaction();
 }
 
@@ -175,7 +214,8 @@ function dbStartTransaction() {
  *
  * @return bool trus if succeed, false if error
  */
-function dbCommitTransaction() {
+function dbCommitTransaction()
+{
     return connectDB()->commit();
 }
 
@@ -184,6 +224,7 @@ function dbCommitTransaction() {
  *
  * @return bool true if succeed, else false
  */
-function dbRollBack() {
+function dbRollBack()
+{
     return connectDB()->rollBack();
 }

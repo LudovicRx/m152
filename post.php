@@ -32,7 +32,7 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
                     // Parcoure chaque media
                     for ($i = 0; $i < count($medias['name']); $i++) {
                         // Vérifie que l'image ou la vidéo est du bon type
-                        if (IsImage($medias['type'][$i]) || IsVideo($medias['type'][$i])) {
+                        if (IsImage($medias['type'][$i]) || IsVideo($medias['type'][$i]) || IsAudio($medias["type"][$i])) {
                             // Crée un nom unique
                             $uniqueName = createUniqueName("media_", $medias["name"][$i]);
                             // Insert le média dans la base de donnée
@@ -102,7 +102,7 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
                                             <textarea class="form-control" name="<?= NAME_INPUT_COMMENT ?>"><?= $comment ?></textarea>
                                         </div>
                                         <div class="row form-group">
-                                            Choisissez une image ou une vidéo : <input class="form-control" type="file" name="<?= NAME_INPUT_FILE ?>[]" multiple accept="image/*,video/*">
+                                            Choisissez une image ou une vidéo : <input class="form-control" type="file" name="<?= NAME_INPUT_FILE ?>[]" multiple accept="image/*,video/*,audio/*">
 
                                         </div>
                                         <div class="row form-group">
