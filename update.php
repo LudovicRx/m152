@@ -10,20 +10,38 @@ require_once(__DIR__ . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "p
 
 $errors = array();
 $comment = "";
+$idPost = 0;
+$medias = array();
+$selectedMedias = array();
+if (filter_input(INPUT_GET, "idPost", FILTER_VALIDATE_INT)) {
+    $idPost = intval(filter_input(INPUT_GET, "idPost", FILTER_SANITIZE_NUMBER_INT));
+}
+
+if ($idPost !== 0) {
+    $comment = getCommentFromPost($idPost);
+    $medias = getMediasFromPost($idPost);
+}
 
 //  Si on a appuyé sur le bouton submit
 if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
     // Commentaire
     $comment = filter_input(INPUT_POST, NAME_INPUT_COMMENT, FILTER_SANITIZE_STRING);
 
+
     // Si le commentaire est valide
     if ($comment) {
+
+        for ($i=0; $i < count($medias); $i++) { 
+            $selectedMedias[$i] = filter_input(INPUT_POST, "media" . $i, FILTER_SANITIZE_STRING);
+        }
+        
         // Si l'insertion du post marche
-        if (dbStartTransaction() && insertPost($comment)) {
-            // Récupère l'id du post
-            $idPost = getLastPost();
+        if (dbStartTransaction() && updatePost($idPost, $comment)) {
             // Si l'id du post est valide
             if ($idPost) {
+
+                
+
                 // Récupère les medias
                 $medias = $_FILES[NAME_INPUT_FILE];
                 // Vérifie que les medias ne sont pas trop lourdes, et que le total n'est pas trop lourd
@@ -61,8 +79,7 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
             }
         }
     }
-}
-
+} 
 
 ?>
 <!DOCTYPE html>
@@ -96,7 +113,7 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
                             <div class="row">
                                 <div class="well">
                                     <h2>
-                                        Ajouter un post
+                                        Modifier un post
                                     </h2>
                                     <form action="#" method="POST" enctype="multipart/form-data">
                                         <div class="row form-group">
@@ -107,8 +124,11 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
 
                                         </div>
                                         <div class="row form-group">
+                                            <?= showMediasCheckbox($medias) ?>
+                                        </div>
+                                        <div class="row form-group">
                                             <input class="form-control" type="submit" name="<?= NAME_SUBMIT_POST ?>">
-                                            <div>
+                                        </div>
                                     </form>
                                 </div>
                             </div>

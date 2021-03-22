@@ -79,6 +79,37 @@ function insertPost($commentaire)
 }
 
 /**
+ * Update a post
+ *
+ * @param integer $idPost id of the post
+ * @param string $comment comment of the post
+ * @return bool true if wors, else false
+ */
+function updatePost($idPost, $comment)
+{
+    static $ps = null;
+    $db = connectDB();
+    $sql = "UPDATE POST SET commentaire = :COMMENTAIRE WHERE idPost = :ID_POST";
+
+    $answer = false;
+    try {
+        if ($ps == null) {
+            // prepare analyse la requête pour savoir s'il peut la résoudre (correction syntaxique, analyse table champs, calule le cout de la requete)
+            $ps = $db->prepare($sql);
+        }
+
+        $ps->bindParam(':COMMENTAIRE', $comment, PDO::PARAM_STR);
+        $ps->bindParam(':ID_POST', $idPost, PDO::PARAM_INT);
+
+        $answer = $ps->execute();
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+
+    return $answer;
+}
+
+/**
  * Get posts with the medias corresponding 
  *
  * @param array $posts all the posts 
@@ -112,6 +143,48 @@ function getPostsWithMedias($posts)
     }
 
     return $answer;
+}
+
+/**
+ * Get one post thanks to the id
+ *
+ * @param integer $idPost id of the post
+ * @return integer if works, else false
+ */
+function getPost(int $idPost)
+{
+    static $ps = null;
+    $db = connectDB();
+    $sql = "SELECT commentaire FROM POST WHERE idPost = :ID_POST";
+
+    $answer = false;
+    try {
+        if ($ps == null) {
+            // prepare analyse la requête pour savoir s'il peut la résoudre (correction syntaxique, analyse table champs, calule le cout de la requete)
+            $ps = $db->prepare($sql);
+        }
+
+        $ps->bindParam(":ID_POST", $idPost, PDO::PARAM_INT);
+
+        if ($ps->execute()) {
+            $answer = $ps->fetch(PDO::FETCH_ASSOC);
+        }
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+
+    return $answer;
+}
+
+/**
+ * Get the comment from a post
+ *
+ * @param integer $idPost id of the post
+ * @return integer if works, else false
+ */
+function getCommentFromPost($idPost)
+{
+    return getPost($idPost)["commentaire"];
 }
 
 /**
@@ -176,10 +249,11 @@ function deletePost(int $idPost)
  * @param integer $idPost id of the post
  * @return array|bool array if succeed else false
  */
-function getMediasFromPost(int $idPost) {
+function getMediasFromPost(int $idPost)
+{
     static $ps = null;
     $db = connectDB();
-    $sql = "SELECT nomFichierMedia FROM MEDIA WHERE idPost = :ID_POST";
+    $sql = "SELECT idMedia, nomFichierMedia, typeMedia FROM MEDIA WHERE idPost = :ID_POST";
 
     try {
         if ($ps == null) {
@@ -189,7 +263,7 @@ function getMediasFromPost(int $idPost) {
 
         $ps->bindParam(":ID_POST", $idPost, PDO::PARAM_INT);
 
-        if($ps->execute()) {
+        if ($ps->execute()) {
             return $ps->fetchAll(PDO::FETCH_ASSOC);
         }
     } catch (PDOException $e) {
