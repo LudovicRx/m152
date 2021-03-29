@@ -154,9 +154,10 @@ function showMediasCheckbox($medias)
     for ($i = 0; $i < count($medias); $i++) {
         $typeMedia = $medias[$i]["typeMedia"];
         $path =  'assets/img/media/' . $medias[$i]["nomFichierMedia"];
-        $name = "media" . $i;
-        $answer .= '<input type="checkbox" id="' . $name . '" name="' . $name . '" value=' . $medias[$i]["idMedia"] . '>';
-        $answer .= '<label for="' . $name . '">';
+        $id = "media" . $i;
+        $name = "media[]";
+        $answer .= '<input type="checkbox" id="' . $id . '" name="' . $name . '" value=' . $medias[$i]["idMedia"] . '>';
+        $answer .= '<label for="' . $id . '">';
         if (IsImage($typeMedia)) {
             $answer .= '<img src="' . $path . '" class="img-responsive">';
         } else if (IsVideo($typeMedia)) {
@@ -178,12 +179,23 @@ function showMediasCheckbox($medias)
     return $answer;
 }
 
+
+/**
+ * Get medias to delete
+ *
+ * @param array $medias all the medias from the post
+ * @param array $selectedMedias medias that are selected
+ * @return array medias that are not selected and that we need to delete
+ */
 function getMediasToDelete($medias, $selectedMedias)
 {
     $result = array();
     for ($i = 0; $i < count($medias); $i++) {
-        
+        if (!in_array($medias[$i]["idMedia"], $selectedMedias)) {
+            array_push($result, $medias[$i]["idMedia"]);
+        }
     }
+    return $result;
 }
 
 /**

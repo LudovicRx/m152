@@ -177,6 +177,35 @@ function getPost(int $idPost)
 }
 
 /**
+ * Delete a specific media
+ *
+ * @param integer $idMedia id of the media
+ * @return bool true if succeed, else false
+ */
+function deleteMedia($idMedia)
+{
+    static $ps = null;
+    $db = connectDB();
+    $sql = "DELETE FROM MEDIA WHERE idMedia = :ID_MEDIA";
+
+    $answer = false;
+    try {
+        if ($ps == null) {
+            // prepare analyse la requête pour savoir s'il peut la résoudre (correction syntaxique, analyse table champs, calule le cout de la requete)
+            $ps = $db->prepare($sql);
+        }
+
+        $ps->bindParam(":ID_MEDIA", $idMedia, PDO::PARAM_INT);
+
+        $answer = $ps->execute();
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+
+    return $answer;
+}
+
+/**
  * Get the comment from a post
  *
  * @param integer $idPost id of the post

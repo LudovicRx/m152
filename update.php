@@ -12,6 +12,7 @@ $errors = array();
 $comment = "";
 $idPost = 0;
 $medias = array();
+$insertedMedias = array();
 $selectedMedias = array();
 if (filter_input(INPUT_GET, "idPost", FILTER_VALIDATE_INT)) {
     $idPost = intval(filter_input(INPUT_GET, "idPost", FILTER_SANITIZE_NUMBER_INT));
@@ -19,7 +20,7 @@ if (filter_input(INPUT_GET, "idPost", FILTER_VALIDATE_INT)) {
 
 if ($idPost !== 0) {
     $comment = getCommentFromPost($idPost);
-    $medias = getMediasFromPost($idPost);
+    $insertedMedias = getMediasFromPost($idPost);
 }
 
 //  Si on a appuyé sur le bouton submit
@@ -31,16 +32,19 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
     // Si le commentaire est valide
     if ($comment) {
 
-        for ($i=0; $i < count($medias); $i++) { 
-            $selectedMedias[$i] = filter_input(INPUT_POST, "media" . $i, FILTER_SANITIZE_STRING);
-        }
-        
+        $selectedMedias = filter_input(INPUT_POST, "media", FILTER_SANITIZE_NUMBER_INT, FILTER_REQUIRE_ARRAY);
+
         // Si l'insertion du post marche
         if (dbStartTransaction() && updatePost($idPost, $comment)) {
             // Si l'id du post est valide
             if ($idPost) {
 
-                
+                $mediasToDelete = getMediasToDelete($medias, $selectedMedias);
+                for ($i = 0; $i < count($mediasToDelete); $i++) {
+                    if (!deleteMedia($mediasToDelete[$i])) {
+                        array_push($errors, "Echec du delete d'un media dans la base de donnée");
+                    }
+                }
 
                 // Récupère les medias
                 $medias = $_FILES[NAME_INPUT_FILE];
@@ -72,14 +76,21 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
                 if (count($errors) == 0) {
                     // Fait une redirection sur la page index s'il n'y a a pas eu d'erreur
                     dbCommitTransaction();
+                    for ($i = 0; $i < count($mediasToDelete); $i++) {
+                        // https://stackoverflow.com/questions/4742903/php-find-entry-by-object-property-from-an-array-of-objects
+                        $media = $insertedMedias[array_search($mediasToDelete[$i], array_column($insertedMedias, "idMedia"))];
+                        unlink(MEDIA_PATH . $media["nomFichierMedia"]);
+                    }
+
                     header("Location: index.php?success=1");
+                    exit();
                 } else {
                     dbRollBack();
                 }
             }
         }
     }
-} 
+}
 
 ?>
 <!DOCTYPE html>
@@ -124,7 +135,7 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
 
                                         </div>
                                         <div class="row form-group">
-                                            <?= showMediasCheckbox($medias) ?>
+                                            <?= showMediasCheckbox($insertedMedias) ?>
                                         </div>
                                         <div class="row form-group">
                                             <input class="form-control" type="submit" name="<?= NAME_SUBMIT_POST ?>">

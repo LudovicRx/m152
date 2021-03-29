@@ -55,6 +55,7 @@ if (filter_input(INPUT_POST, NAME_SUBMIT_POST, FILTER_SANITIZE_STRING)) {
                     // Fait une redirection sur la page index s'il n'y a a pas eu d'erreur
                     dbCommitTransaction();
                     header("Location: index.php?success=1");
+                    exit();
                 } else {
                     dbRollBack();
                 }
